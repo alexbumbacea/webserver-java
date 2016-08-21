@@ -1,8 +1,11 @@
 package com.bumbacea.server;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class Response {
     private HashMap<String, String> headers;
@@ -69,13 +72,15 @@ public class Response {
     }
 
     protected void prepareHeaders() {
-        this.headers.put("Date", String.valueOf(new java.util.Date().toGMTString()));
+        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+        df.setTimeZone(TimeZone.getTimeZone("GMT"));
+        this.headers.put("Date", df.format(new java.util.Date()));
         this.headers.put("Status", this.statusCode.toString());
         if (this.statusCode != 200) {
             return ;
         }
-        this.headers.put("Last-Modified", new java.util.Date(this.file.lastModified()).toGMTString());
 
+        this.headers.put("Last-Modified", df.format(new java.util.Date(this.file.lastModified())));
         this.headers.put("Content-Disposition", "attachment; filename=\"" + this.file.getName() +"\"");
         this.headers.put("Content-Length", String.valueOf(this.file.length()));
 

@@ -24,7 +24,7 @@ public class Connection implements Runnable {
         try {
             this.processRequest();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage());
+            logger.severe(e.getMessage());
         }
     }
 
@@ -34,7 +34,6 @@ public class Connection implements Runnable {
             Request req = this.getRequest(headers);
             Response res = this.handleRequest(req);
             res.write(this.clientSocket.getOutputStream());
-
             logger.log(Level.FINE, "Replied with " + res.statusCode + " on " + req.path );
             this.clientSocket.close();
         } catch (IOException e) {

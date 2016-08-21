@@ -20,6 +20,7 @@ public class BaseTest {
     @Before
     public void setUp() {
         webServer = new Webserver(port, "/tmp");
+        Webserver.POOL_SIZE = 3;
         webServer.start();
     }
 
@@ -111,7 +112,7 @@ public class BaseTest {
     }
 
     @After
-    public void teadDown()
+    public void tearDown()
     {
         webServer.interrupt();
     }

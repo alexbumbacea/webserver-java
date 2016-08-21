@@ -62,7 +62,7 @@ public class Webserver extends Thread {
             try {
                 clientSocket = socket.accept();
             } catch (SocketException e) {
-                //socket closed ...
+                logger.warning("Socket exception:" + e.getMessage());
                 return;
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -74,7 +74,7 @@ public class Webserver extends Thread {
             } catch (SocketException e) {
                 throw new RuntimeException(e);
             }
-            logger.finer("Received new connection from " + clientSocket.getInetAddress().getHostAddress());
+            logger.fine("Received new connection from " + clientSocket.getInetAddress().getHostAddress());
             executor.submit(new Connection(clientSocket));
         }
     }
@@ -83,7 +83,7 @@ public class Webserver extends Thread {
     public void interrupt() {
         //should stop, do not accept new connections
         this.executor.shutdown();
-        logger.finer("Waiting for all threads to finish execution");
+        logger.fine("Waiting for all threads to finish execution");
         try {
             this.executor.awaitTermination(30, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
@@ -94,7 +94,7 @@ public class Webserver extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.finer("Server closed");
+        logger.fine("Server closed");
 
 
         super.interrupt();
