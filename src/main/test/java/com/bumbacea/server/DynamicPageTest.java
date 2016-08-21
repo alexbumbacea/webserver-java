@@ -69,9 +69,9 @@ public class DynamicPageTest extends BaseTest {
         });
         HttpResponse response = getHttpResponse("/name?name=alex", "GET");
         Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-        byte[] bytes = new byte[4];
+        byte[] bytes = new byte[1024];
         response.getEntity().getContent().read(bytes);
-        Assert.assertEquals("alex", new String(bytes, StandardCharsets.UTF_8));
+        Assert.assertEquals("alex", new String(bytes, StandardCharsets.UTF_8).trim());
     }
 
     @After
