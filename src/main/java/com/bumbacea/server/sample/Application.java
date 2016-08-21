@@ -17,8 +17,8 @@ public class Application {
         ServerConfig serverConfig = new ServerConfig();
         serverConfig.setPort(args[1]);
         serverConfig.setPath(args[0]);
-        serverConfig.addMapping("GET", "/test.dynamic", new SampleAbstractController());
-        serverConfig.addMapping("GET", "/test.dynamic2", new SampleAbstractController());
+        serverConfig.addMapping("GET", "/test.dynamic", new SampleController());
+        serverConfig.addMapping("GET", "/test.dynamic2", new SampleController());
 
         Webserver server = new Webserver(serverConfig);
 

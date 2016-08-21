@@ -25,7 +25,7 @@ You can configure port and path for checking for files
 
 #### Load dynamic pages
 
-    serverConfig.addMapping("GET", "/test.dynamic", new SampleAbstractController());
+    serverConfig.addMapping("GET", "/test.dynamic", new SampleController());
 
 
 ### Build

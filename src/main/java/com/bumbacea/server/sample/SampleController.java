@@ -4,7 +4,7 @@ import com.bumbacea.server.controller.AbstractController;
 import com.bumbacea.server.Request;
 import com.bumbacea.server.Response;
 
-public class SampleAbstractController extends AbstractController {
+public class SampleController extends AbstractController {
 
     @Override
     public Response handle(Request req) {
