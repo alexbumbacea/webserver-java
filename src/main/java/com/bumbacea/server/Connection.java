@@ -1,47 +1,49 @@
 package com.bumbacea.server;
 
 
+import com.bumbacea.server.controller.AbstractController;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Connection implements Runnable {
-    private final Socket clientSocket;
+    private Socket clientSocket;
+    private ServerConfig serverConfig = new ServerConfig();
+
     private static final Logger logger = Logger.getLogger( Connection.class.getName() );
 
-
-    public Connection(Socket clientSocket) {
+    public Connection(Socket clientSocket, ServerConfig serverConfig) {
+        this.serverConfig = serverConfig;
         this.clientSocket = clientSocket;
+
     }
 
     public void run() {
         try {
-            this.processRequest();
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-        }
-    }
-
-    private void processRequest() {
-        List<String> headers = new ArrayList<String>();
-        try {
-            Request req = this.getRequest(headers);
+            Request req = this.getRequest();
             Response res = this.handleRequest(req);
             res.write(this.clientSocket.getOutputStream());
             logger.log(Level.FINE, "Replied with " + res.statusCode + " on " + req.path );
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+        }
+        try {
+            //try close connection if something goes wrong
             this.clientSocket.close();
-        } catch (IOException e) {
-            logger.log(Level.WARNING, e.getMessage());
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
     }
 
-    private Request getRequest(List<String> headers) throws IOException {
+    private Request getRequest() throws IOException {
+        List<String> headers =  new ArrayList<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
         while(true) {
@@ -53,40 +55,22 @@ public class Connection implements Runnable {
             }
         }
 
-        return Request.fromString(headers);
+        return new Request(headers);
     }
 
     private Response handleRequest(Request r) {
-        switch (r.method) {
-            case Request.METHOD_GET:
-            case Request.METHOD_HEAD:
-                return this.reply(r);
-            default:
-                return new Response(405);
+        try {
+            //dynamic urls
+            for (Map.Entry<RouteMatch, AbstractController> route : serverConfig.getMappings().entrySet()) {
+                if (route.getKey().match(r)) {
+                    return route.getValue().handle(r);
+                }
+            }
+
+            return serverConfig.getDefaultController().handle(r);
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return new Response(500);
         }
-    }
-
-    private Response reply(Request r) {
-        File f = new File(Webserver.basePath.getPath() + '/' + r.getPath());
-
-        if (r.path.contains("/../")) {
-            return new Response(403, "/../ not allowed in path");
-        }
-
-        if (!f.exists()) {
-            return new Response(404, "File not found");
-        }
-
-        if (!f.isFile()) {
-            //log
-            return new Response(403, "Is not a file");
-        }
-
-        if (!f.canRead()) {
-            //log
-            return new Response(403, "No read permission for webserver");
-        }
-
-        return new Response(f, r.method);
     }
 }

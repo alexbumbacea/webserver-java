@@ -10,33 +10,38 @@ public class Request {
     protected String method = METHOD_GET;
     protected String protocol = "HTTP/1.1";
     protected String path = "/";
-    protected HashMap<String, String> headers = new HashMap<String, String>();
+    protected HashMap<String,String> queryString = new HashMap<>();
+    protected HashMap<String, String> headers = new HashMap<>();
 
-    public static Request fromString(List<String> headers)
+    public Request(List<String> headers)
     {
-        //parsed according to https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html
-        Request request = new Request();
         String[] firstLine = headers.get(0).split(" ");
-        request.method = firstLine[0];
-
+        this.method = firstLine[0];
 
         int separator = firstLine[1].indexOf("?");
         if (separator == -1) {
-            request.path = firstLine[1];
+            this.path = firstLine[1];
         } else {
-            request.path = firstLine[1].substring(0, separator);
+            this.path = firstLine[1].substring(0, separator);
+            String[] qs = firstLine[1].substring(separator+1).split("&");
+            for (String q : qs) {
+                int separatorEqual = q.indexOf("=");
+                if (separatorEqual != -1) {
+                    this.queryString.put(q.substring(0, separatorEqual), q.substring(separatorEqual+1));
+                } else {
+                    this.queryString.put(q, "1");
+                }
+            }
         }
 
-        request.protocol = firstLine[2];
+        this.protocol = firstLine[2];
 
         headers.remove(0);
 
         for (String line : headers) {
             String[] lineSplit= line.split(":");
-            request.headers.put(lineSplit[0], lineSplit[1]);
+            this.headers.put(lineSplit[0], lineSplit[1]);
         }
-
-        return request;
     }
 
     public String getMethod() {
@@ -53,5 +58,10 @@ public class Request {
 
     public HashMap<String, String> getHeaders() {
         return headers;
+    }
+
+
+    public HashMap<String, String> getQueryString() {
+        return queryString;
     }
 }

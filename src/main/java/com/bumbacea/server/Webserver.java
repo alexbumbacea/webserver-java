@@ -12,36 +12,29 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class Webserver extends Thread {
-    /**
-     * Maximum time to wait for request from client once was connected (in ms)
-     */
-    public static int HTTP_SOCKET_TIMEOUT = 5000;
 
 
-    /**
-     * Number of parallel connections accepted in the same time
-     */
-    public static int POOL_SIZE = 20;
-
-
-    public static File basePath;
+    protected ServerConfig serverConfig;
 
     protected ServerSocket socket;
     private ExecutorService executor;
 
-    private final int port;
     private static final Logger logger = Logger.getLogger(Connection.class.getName());
-    private boolean shouldStop;
 
-    public Webserver(int port, String path) {
-        this.port = port;
-        basePath = new File(path);
+    public Webserver(ServerConfig serverConfig) {
+        this.serverConfig = serverConfig;
         this.checkPathIsValid();
-
-        this.executor = new ThreadPoolExecutor(POOL_SIZE, POOL_SIZE, 120, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        this.executor = new ThreadPoolExecutor(ServerConfig.POOL_SIZE, ServerConfig.POOL_SIZE, ServerConfig.KEEP_ALIVE_TIME_POOL, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        this.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private void checkPathIsValid() {
+        File basePath = new File(serverConfig.getPath());
         if (!basePath.exists()) {
             throw new RuntimeException("Base path not available");
         }
@@ -53,12 +46,12 @@ public class Webserver extends Thread {
 
     public void run() {
         try {
-            socket = new ServerSocket(port);
+            socket = new ServerSocket(serverConfig.getPort());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         Socket clientSocket;
-        while (!this.shouldStop && !socket.isClosed()) {
+        while (!socket.isClosed()) {
             try {
                 clientSocket = socket.accept();
             } catch (SocketException e) {
@@ -70,12 +63,12 @@ public class Webserver extends Thread {
 
             //so we don't let someone keep a connection busy too long
             try {
-                clientSocket.setSoTimeout(HTTP_SOCKET_TIMEOUT);
+                clientSocket.setSoTimeout(ServerConfig.HTTP_SOCKET_TIMEOUT);
             } catch (SocketException e) {
                 throw new RuntimeException(e);
             }
             logger.fine("Received new connection from " + clientSocket.getInetAddress().getHostAddress());
-            executor.submit(new Connection(clientSocket));
+            executor.submit(new Connection(clientSocket, serverConfig));
         }
     }
 
@@ -98,9 +91,5 @@ public class Webserver extends Thread {
 
 
         super.interrupt();
-    }
-
-    public void shouldStop(boolean state) {
-        this.shouldStop = state;
     }
 }

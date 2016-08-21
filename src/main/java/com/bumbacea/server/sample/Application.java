@@ -1,5 +1,6 @@
 package com.bumbacea.server.sample;
 
+import com.bumbacea.server.ServerConfig;
 import com.bumbacea.server.Webserver;
 
 import java.io.FileInputStream;
@@ -13,18 +14,16 @@ public class Application {
         FileInputStream configFile = new FileInputStream("logger.properties");
         LogManager.getLogManager().readConfiguration(configFile);
 
+        ServerConfig serverConfig = new ServerConfig();
+        serverConfig.setPort(args[1]);
+        serverConfig.setPath(args[0]);
+        serverConfig.addMapping("GET", "/test.dynamic", new SampleAbstractController());
+        serverConfig.addMapping("GET", "/test.dynamic2", new SampleAbstractController());
 
-        Webserver server1 = new Webserver(Integer.parseInt(args[1]), args[0]);
+        Webserver server = new Webserver(serverConfig);
 
-        server1.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                e.printStackTrace();
-            }
-        });
-
-        server1.start();
-        while (server1.isAlive()) {
+        server.start();
+        while (server.isAlive()) {
             Thread.sleep(3000);
         }
         System.out.println("Exiting");

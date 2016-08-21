@@ -3,21 +3,31 @@
 * static file delivery
 * access log / error log
 * streams support for large files
+* dynamic pages trough extending "AbstractController" class
 
 ## Usage
 
 ### Configuration
 You can configure port and path for checking for files
 
-    new Webserver(path, port);
+    Config serverConfig = new Config();
+    serverConfig.setPort(8080);
+    serverConfig.setPath("/tmp");
+    Webserver server = new Webserver(serverConfig);
 
-You can also configure the number of workers
+#### Configure number of workers
 
-    Webserver.POOL_SIZE (default is 20)
+    Config.POOL_SIZE (default is 20)
 
-and
+#### Configure timeout on socket
 
-    Webserver.HTTP_SOCKET_TIMEOUT (default is 5000 in MS)
+    Config.HTTP_SOCKET_TIMEOUT (default is 5000 in MS)
+
+#### Load dynamic pages
+
+    serverConfig.addMapping("GET", "/test.dynamic", new SampleAbstractController());
+
+
 ### Build
     mvn clean package
 ### Test
