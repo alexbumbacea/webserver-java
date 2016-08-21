@@ -74,6 +74,18 @@ public class DynamicPageTest extends BaseTest {
         Assert.assertEquals("alex", new String(bytes, StandardCharsets.UTF_8).trim());
     }
 
+    @Test
+    public void testDynamicWithRegexRoute() throws IOException, HttpException {
+        webServer.serverConfig.addMapping(new RouteMatcherRegex("/name/.+", "GET"), new AbstractController() {
+            @Override
+            public Response handle(Request req) {
+                return new Response(req.path);
+            }
+        });
+        HttpResponse response = getHttpResponse("/name/alex", "GET");
+        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    }
+
     @After
     public void tearDown() {
         webServer.interrupt();

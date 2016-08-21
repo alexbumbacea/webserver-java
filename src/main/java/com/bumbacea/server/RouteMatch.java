@@ -2,7 +2,7 @@ package com.bumbacea.server;
 
 public class RouteMatch {
     private String path;
-    private String method;
+    protected String method;
 
     public RouteMatch(String path, String method) {
         this.path = path;

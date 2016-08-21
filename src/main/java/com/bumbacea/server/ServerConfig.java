@@ -46,7 +46,11 @@ public class ServerConfig {
     }
 
     public void addMapping(String method, String path, AbstractController controller) {
-        this.mappings.put(new RouteMatch(path, method), controller);
+        this.addMapping(new RouteMatch(path, method), controller);
+    }
+
+    public void addMapping(RouteMatch matcher, AbstractController controller) {
+        this.mappings.put(matcher, controller);
     }
 
     public HashMap<RouteMatch, AbstractController> getMappings()
