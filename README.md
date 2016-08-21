@@ -27,6 +27,9 @@ You can configure port and path for checking for files
 
     serverConfig.addMapping("GET", "/test.dynamic", new SampleController());
 
+#### Configure logger
+
+Edit the file "logger.properties" according to the documentation from here https://docs.oracle.com/cd/E19717-01/819-7753/gcblo/
 
 ### Build
     mvn clean package
