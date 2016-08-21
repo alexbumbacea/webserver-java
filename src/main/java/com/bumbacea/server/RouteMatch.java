@@ -1,8 +1,8 @@
 package com.bumbacea.server;
 
 public class RouteMatch {
-    private String path;
     protected String method;
+    private String path;
 
     public RouteMatch(String path, String method) {
         this.path = path;

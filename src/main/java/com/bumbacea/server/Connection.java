@@ -14,10 +14,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Connection implements Runnable {
+    private static final Logger logger = Logger.getLogger(Connection.class.getName());
     private Socket clientSocket;
     private ServerConfig serverConfig = new ServerConfig();
-
-    private static final Logger logger = Logger.getLogger( Connection.class.getName() );
 
     public Connection(Socket clientSocket, ServerConfig serverConfig) {
         this.serverConfig = serverConfig;
@@ -35,7 +34,7 @@ public class Connection implements Runnable {
             logger.severe(e.getMessage());
         }
         try {
-            //try close connection if something goes wrong
+            //try close connection, even if something went wrong
             this.clientSocket.close();
         } catch (IOException e1) {
             e1.printStackTrace();
@@ -43,10 +42,10 @@ public class Connection implements Runnable {
     }
 
     private Request getRequest() throws IOException {
-        List<String> headers =  new ArrayList<>();
+        List<String> headers = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-        while(true) {
+        while (true) {
             String headerAsString = reader.readLine();
             if (headerAsString.isEmpty()) {
                 break;

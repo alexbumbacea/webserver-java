@@ -6,10 +6,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.impl.DefaultBHttpClientConnection;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.protocol.*;
-import org.junit.*;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
 
 public abstract class BaseTest {

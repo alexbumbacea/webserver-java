@@ -1,6 +1,7 @@
 package com.bumbacea.server;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,9 +10,9 @@ import java.util.Map;
 import java.util.TimeZone;
 
 public class Response {
-    protected HashMap<String, String> headers;
     public Integer statusCode = 200;
     public String protocol = "HTTP/1.1";
+    protected HashMap<String, String> headers;
     protected String content = "";
 
 
@@ -36,7 +37,7 @@ public class Response {
     }
 
     protected void writeContent(OutputStream outputStream) throws IOException {
-        if (!this.content.equals(null)) {
+        if (this.content != null) {
             outputStream.write(this.content.getBytes());
         }
     }

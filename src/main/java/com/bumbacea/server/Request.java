@@ -10,11 +10,10 @@ public class Request {
     protected String method = METHOD_GET;
     protected String protocol = "HTTP/1.1";
     protected String path = "/";
-    protected HashMap<String,String> queryString = new HashMap<>();
+    protected HashMap<String, String> queryString = new HashMap<>();
     protected HashMap<String, String> headers = new HashMap<>();
 
-    public Request(List<String> headers)
-    {
+    public Request(List<String> headers) {
         String[] firstLine = headers.get(0).split(" ");
         this.method = firstLine[0];
 
@@ -23,11 +22,11 @@ public class Request {
             this.path = firstLine[1];
         } else {
             this.path = firstLine[1].substring(0, separator);
-            String[] qs = firstLine[1].substring(separator+1).split("&");
+            String[] qs = firstLine[1].substring(separator + 1).split("&");
             for (String q : qs) {
                 int separatorEqual = q.indexOf("=");
                 if (separatorEqual != -1) {
-                    this.queryString.put(q.substring(0, separatorEqual), q.substring(separatorEqual+1));
+                    this.queryString.put(q.substring(0, separatorEqual), q.substring(separatorEqual + 1));
                 } else {
                     this.queryString.put(q, "1");
                 }
@@ -39,7 +38,7 @@ public class Request {
         headers.remove(0);
 
         for (String line : headers) {
-            String[] lineSplit= line.split(":");
+            String[] lineSplit = line.split(":");
             this.headers.put(lineSplit[0], lineSplit[1]);
         }
     }

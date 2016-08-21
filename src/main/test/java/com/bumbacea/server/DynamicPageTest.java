@@ -11,9 +11,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Created by abumbacea on 21/08/16.
- */
 public class DynamicPageTest extends BaseTest {
     private Webserver webServer;
 

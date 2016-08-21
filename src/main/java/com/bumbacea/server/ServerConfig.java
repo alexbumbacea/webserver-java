@@ -20,7 +20,7 @@ public class ServerConfig {
     private HashMap<RouteMatch, AbstractController> mappings;
     private AbstractController defaultController;
 
-    public ServerConfig(){
+    public ServerConfig() {
         this.mappings = new HashMap<>();
         this.defaultController = new FileServerController(this);
     }
@@ -29,20 +29,20 @@ public class ServerConfig {
         return path;
     }
 
-    public int getPort() {
-        return port;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public void setPort(Integer port) {
-        this.port = port;
+    public int getPort() {
+        return port;
     }
 
     public void setPort(String port) {
         this.port = Integer.parseInt(port);
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setPort(Integer port) {
+        this.port = port;
     }
 
     public void addMapping(String method, String path, AbstractController controller) {
@@ -53,8 +53,7 @@ public class ServerConfig {
         this.mappings.put(matcher, controller);
     }
 
-    public HashMap<RouteMatch, AbstractController> getMappings()
-    {
+    public HashMap<RouteMatch, AbstractController> getMappings() {
         return this.mappings;
     }
 

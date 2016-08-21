@@ -14,12 +14,10 @@ import java.util.logging.Logger;
 public class Webserver extends Thread {
 
 
+    private static final Logger logger = Logger.getLogger(Connection.class.getName());
     protected ServerConfig serverConfig;
-
     protected ServerSocket socket;
     private ExecutorService executor;
-
-    private static final Logger logger = Logger.getLogger(Connection.class.getName());
 
     public Webserver(ServerConfig serverConfig) {
         this.serverConfig = serverConfig;

@@ -16,7 +16,7 @@ public class ResponseFile extends Response {
     protected void writeHeaders(OutputStream outputStream) throws IOException {
 
         this.headers.put("Last-Modified", getDateFormat().format(new java.util.Date(this.file.lastModified())));
-        this.headers.put("Content-Disposition", "attachment; filename=\"" + this.file.getName() +"\"");
+        this.headers.put("Content-Disposition", "attachment; filename=\"" + this.file.getName() + "\"");
         this.headers.put("Content-Length", String.valueOf(this.file.length()));
 
         super.writeHeaders(outputStream);
@@ -30,8 +30,7 @@ public class ResponseFile extends Response {
             //buffer response in order not to overload memory
             int bytesRead;
             byte[] buffer = new byte[1024];
-            while ((bytesRead = fileStream.read(buffer)) != -1)
-            {
+            while ((bytesRead = fileStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
         }

@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-/**
- * Created by abumbacea on 21/08/16.
- */
 public class StaticServerTest extends BaseTest {
     private Webserver webServer;
 
@@ -84,9 +81,9 @@ public class StaticServerTest extends BaseTest {
         HttpResponse response = getHttpResponse("/webtest.txt?blabla", method);
         Assert.assertEquals(200, response.getStatusLine().getStatusCode());
     }
+
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
         webServer.interrupt();
     }
 

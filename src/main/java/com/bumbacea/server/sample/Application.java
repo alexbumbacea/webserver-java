@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.logging.LogManager;
 
 public class Application {
-    public static void main(String [] args) throws IOException, ClassNotFoundException, InterruptedException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
         //setup logger to display in console
         FileInputStream configFile = new FileInputStream("logger.properties");
