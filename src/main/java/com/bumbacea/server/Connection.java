@@ -30,7 +30,7 @@ public class Connection implements Runnable {
             Request req = this.getRequest();
             Response res = this.handleRequest(req);
             res.write(this.clientSocket.getOutputStream());
-            logger.log(Level.FINE, "Replied with " + res.statusCode + " on " + req.path );
+            logger.log(Level.FINE, "Replied with " + res.statusCode + " on " + req.path + " for client " + clientSocket.getRemoteSocketAddress().toString());
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }
